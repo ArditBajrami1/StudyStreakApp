@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>🔥 Study Streak & Rewards · Mobile Ready</title>
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --surface: #16213e;
+      --surface2: #0f3460;
+      --gold: #f0c060;
+      --text: #e0d6c2;
+      --text-light: #b7a98a;
+      --accent: #e94560;
+      --flame-glow: #ff6b35;
+      --success: #4caf84;
+      --card-bg: #1c2541;
+      --border: #2a3a5c;
+      --shadow: 0 6px 20px rgba(0,0,0,0.3);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --transition: 0.2s ease;
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .light-theme {
+      --bg: #f5f0e8;
+      --surface: #ffffff;
+      --surface2: #e8e0d5;
+      --gold: #c48b29;
+      --text: #2d2a24;
+      --text-light: #5e5548;
+      --accent: #c0392b;
+      --flame-glow: #d35400;
+      --success: #2e7d32;
+      --card-bg: #fffdf7;
+      --border: #d4c9b5;
+      --shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(255,107,53,0.07) 0%, transparent 60%);
+      background-attachment: fixed;
+      transition: background 0.4s, color 0.3s;
+    }
+
+    .app {
+      max-width: 750px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 5px 0;
+    }
+    .header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #f0c060, #ff8c42, #e94560);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-light);
+    }
+
+    /* Flame */
+    .flame-box {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .flame-emoji {
+      font-size: clamp(3rem, 15vw, 5.5rem);
+      transition: 0.4s ease;
+      filter: drop-shadow(0 0 18px var(--flame-glow));
+      animation: flicker 0.15s infinite alternate;
+    }
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-1deg); }
+      100% { transform: scale(1.03) rotate(1deg); }
+    }
+    .streak-number {
+      font-size: clamp(2rem, 10vw, 3.2rem);
+      font-weight: 900;
+      color: #fff;
+      margin-top: 4px;
+    }
+    .streak-badge {
+      display: inline-block;
+      background: var(--surface2);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      flex: 1;
+      min-width: 80px;
+      background: var(--card-bg);
+      border-radius: var(--radius-sm);
+      padding: 14px 8px;
+      text-align: center;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+    .stat-value.points {
+      background: linear-gradient(135deg, #f0c060, #e0a030);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    /* Timer */
+    .timer-box {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .timer-display {
+      font-size: clamp(2.8rem, 12vw, 4rem);
+      font-weight: 900;
+      text-align: center;
+      font-family: 'Fira Code', monospace;
+      letter-spacing: 3px;
+      margin: 10px 0;
+      min-width: 180px;
+      color: #fff;
+      transition: color 0.2s;
+    }
+    .timer-display.running {
+      color: #ff8c42;
+      text-shadow: 0 0 20px rgba(255,140,66,0.5);
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: var(--surface2);
+      border-radius: 10px;
+      margin: 6px 0 12px;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f0c060, #ff8c42);
+      border-radius: 10px;
+      transition: width 0.3s linear;
+    }
+    .timer-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    /* Mood & habit */
+    .mood-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 12px 0;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+    .habit-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface2);
+      border-radius: 30px;
+      padding: 2px 2px 2px 16px;
+      border: 1px solid var(--border);
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .habit-row input {
+      border: none;
+      background: transparent;
+      flex: 1;
+      padding: 10px 0;
+      outline: none;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    .habit-row input::placeholder {
+      color: var(--text-light);
+      opacity: 0.6;
+    }
+    .habit-row button {
+      border-radius: 30px;
+      padding: 10px 20px;
+      background: var(--success);
+      color: white;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Calendar */
+    .calendar-box {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .calendar-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .calendar-nav button {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .calendar-month {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      gap: 4px;
+    }
+    .calendar-day-name {
+      font-weight: 700;
+      color: var(--text-light);
+      padding: 6px 0;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .calendar-day {
+      padding: 8px 4px;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 38px;
+      transition: 0.2s;
+    }
+    .calendar-day.today {
+      border: 2px solid var(--gold);
+      font-weight: 700;
+    }
+    .calendar-day.studied {
+      background: #4caf8420;
+    }
+    .calendar-day .flame-mini {
+      font-size: 0.7rem;
+      margin-top: 2px;
+      display: none;
+    }
+    .calendar-day.studied .flame-mini {
+      display: block;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 12px 0;
+      justify-content: center;
+    }
+    .tab-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .tab-btn.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #1a1a2e;
+    }
+
+    .tab-panel {
+      display: none;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 18px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-top: 8px;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Rewards */
+    .rewards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin: 15px 0;
+    }
+    .reward-card {
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      padding: 16px 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .reward-emoji {
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+    .reward-name {
+      font-weight: 700;
+      color: #fff;
+      margin: 4px 0;
+      font-size: 0.9rem;
+    }
+    .reward-cost {
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-weight: 700;
+      margin: 4px 0 8px;
+    }
+    .btn-redeem {
+      width: 100%;
+      margin-top: auto;
+      padding: 8px;
+      border-radius: 20px;
+      background: var(--gold);
+      color: #1a1a2e;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-redeem:disabled {
+      background: #555;
+      color: #999;
+    }
+
+    /* Badges */
+    .badge-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+    .badge {
+      background: var(--surface2);
+      border-radius: 14px;
+      padding: 10px 8px;
+      width: 80px;
+      text-align: center;
+      opacity: 0.45;
+      transition: 0.2s;
+    }
+    .badge.earned {
+      opacity: 1;
+      box-shadow: 0 0 12px var(--gold);
+    }
+    .badge-emoji {
+      font-size: 2rem;
+    }
+    .badge-name {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-light);
+      line-height: 1.2;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+
+    /* Goals */
+    .goal-form {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .goal-form input {
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+    }
+    .goal-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      margin: 6px 0;
+      border: 1px solid var(--border);
+    }
+
+    /* Journal */
+    .journal-entry {
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin: 8px 0;
+      border: 1px solid var(--border);
+    }
+    .journal-meta {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+
+    /* Challenge */
+    .challenge-card {
+      background: var(--surface2);
+      border-radius: 14px;
+      padding: 16px;
+      margin: 10px 0;
+      border: 1px solid var(--border);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid var(--border);
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-primary { background: #4caf84; color: white; border: none; }
+    .btn-danger { background: #e94560; color: white; border: none; }
+    .btn-gold { background: linear-gradient(135deg, #f0c060, #e0a030); color: #1a1a2e; }
+    .btn-small { padding: 6px 14px; font-size: 0.75rem; }
+
+    /* Toast */
+    .toast-container {
+      position: fixed; top: 20px; right: 20px; z-index: 9999;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast {
+      background: #1e2a3a; color: white; padding: 12px 22px;
+      border-radius: 30px; font-weight: 600; font-size: 0.9rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(120%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 500px) {
+      .rewards-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .reward-card {
+        padding: 12px 8px;
+      }
+      .timer-controls .btn {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+      }
+      .stats {
+        gap: 6px;
+      }
+      .stat-card {
+        padding: 10px 6px;
+      }
+      .stat-value {
+        font-size: 1.4rem;
+      }
+      .habit-row {
+        max-width: 100%;
+        padding-left: 12px;
+      }
+      .tab-btn {
+        padding: 6px 12px;
+        font-size: 0.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>🔥 Study Streak</h1>
+      <div class="subtitle">consistent · rewarded · loved</div>
+    </div>
+
+    <!-- Flame -->
+    <div class="flame-box">
+      <span class="flame-emoji" id="flameEmoji">🔥</span>
+      <div class="streak-number" id="streakNumber">0</div>
+      <span class="streak-badge multiplier" id="multiplierBadge">🔥 1.0x</span>
+      <span class="streak-badge" id="studiedBadge" style="display:none;background:#4caf8420;">✅ Studied Today</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card"><div class="stat-value points" id="totalPoints">0</div><div class="stat-label">⭐ Points</div></div>
+      <div class="stat-card"><div class="stat-value" id="todayMinutes">0</div><div class="stat-label">⏱️ min today</div></div>
+      <div class="stat-card"><div class="stat-value">❄️ <span id="freezeTokens">0</span></div><div class="stat-label">freezes</div></div>
+    </div>
+
+    <!-- Timer + progress bar -->
+    <div class="timer-box">
+      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div class="progress-bar-container" id="progressBarContainer">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+      <div class="timer-controls">
+        <button class="btn" onclick="setPreset(25)">🍅 25m</button>
+        <button class="btn" onclick="setPreset(45)">📚 45m</button>
+        <button class="btn" onclick="setPreset(60)">🎯 60m</button>
+        <button class="btn btn-primary" id="btnStart">▶ Start</button>
+        <button class="btn btn-danger" id="btnStop" disabled>⏹ Stop</button>
+      </div>
+
+      <!-- Mood & Energy (centered) -->
+      <div class="mood-row">
+        <select id="moodSelect"><option>😊 Happy</option><option>😐 Neutral</option><option>😴 Tired</option><option>💪 Motivated</option></select>
+        <select id="energySelect"><option value="3">🔋 High</option><option value="2">🔋 Medium</option><option value="1">🔋 Low</option></select>
+      </div>
+
+      <!-- Habit stacking -->
+      <div class="habit-row">
+        <input type="text" id="habitInput" placeholder="e.g. After morning coffee ☕">
+        <button id="habitDoneBtn">✅ Done</button>
+      </div>
+      <button class="btn btn-gold" id="btnCheckin" style="width:100%; margin-top:10px;">📝 Quick Check-in (5 min)</button>
+    </div>
+
+    <!-- Calendar -->
+    <div class="calendar-box">
+      <div class="calendar-nav">
+        <button id="prevMonthBtn">◀</button>
+        <span class="calendar-month" id="calendarMonthLabel"></span>
+        <button id="nextMonthBtn">▶</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="rewards">🎁 Rewards</button>
+      <button class="tab-btn" data-tab="badges">🏆 Badges</button>
+      <button class="tab-btn" data-tab="goals">🎯 Goals</button>
+      <button class="tab-btn" data-tab="journal">📓 Journal</button>
+      <button class="tab-btn" data-tab="challenges">🔥 Challenges</button>
+      <button class="tab-btn" data-tab="roulette">🎡 Roulette</button>
+      <button class="tab-btn" data-tab="settings">⚙️ Settings</button>
+    </div>
+
+    <!-- Panels -->
+    <div class="tab-panel active" id="panel-rewards">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Rewards Shop</h3>
+        <button class="btn btn-small" onclick="openAddRewardModal()">+ Custom</button>
+      </div>
+      <div class="rewards-grid" id="rewardsGrid"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-badges">
+      <h3>Achievements</h3>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-goals">
+      <h3>Personal Goals</h3>
+      <div id="goalsList"></div>
+      <div class="goal-form">
+        <input type="text" id="newGoalDesc" placeholder="Goal description" style="flex:1;">
+        <input type="number" id="newGoalTarget" placeholder="Points" style="width:80px;">
+        <button class="btn btn-primary" onclick="addGoal()">+ Add</button>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-journal">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>Study Journal</h3>
+        <button class="btn btn-primary btn-small" id="newJournalBtn">✏️ New Note</button>
+      </div>
+      <div id="journalEntries"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-challenges">
+      <h3>Challenge Mode</h3>
+      <div id="challengeContainer"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-roulette">
+      <h3>Reward Roulette</h3>
+      <p style="color:var(--text-light);">Spin for a reward or streak freeze – 50 pts</p>
+      <div class="roulette-wheel" id="rouletteWheel" style="font-size:3rem;">🎰</div>
+      <button class="btn btn-primary" id="spinRouletteBtn">🎲 Spin</button>
+      <div id="rouletteResult" style="margin-top:10px; font-weight:700;"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-settings">
+      <h3>Settings</h3>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+        <button class="btn" id="themeToggle">🌓 Light Mode</button>
+        <button class="btn" id="shareBFBtn">💌 Share with BF</button>
+      </div>
+      <p style="margin-top:12px; color:var(--text-light);">Soundscapes:</p>
+      <button class="btn" id="rainSoundBtn">🌧️ Rain</button>
+      <button class="btn" id="cafeSoundBtn">☕ Café</button>
+    </div>
+  </div>
+
+  <!-- Completion Modal (alarm) -->
+  <div class="modal-overlay" id="completionModal" style="display:none;">
+    <div class="modal">
+      <h2>🎉 Time's Up!</h2>
+      <p id="completionMsg">You completed your study session!</p>
+      <button class="btn btn-primary" id="completionOkBtn">Great! 🎉</button>
+    </div>
+  </div>
+
+  <!-- Add reward modal -->
+  <div class="modal-overlay" id="addRewardModal" style="display:none;">
+    <div class="modal">
+      <h3>Add Custom Reward</h3>
+      <input id="newRewardName" placeholder="Name"><input id="newRewardDesc" placeholder="Description"><input id="newRewardEmoji" placeholder="Emoji"><input id="newRewardCost" type="number" placeholder="Cost">
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button class="btn" onclick="closeAddRewardModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addCustomReward()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Journal note modal -->
+  <div class="modal-overlay" id="journalModal" style="display:none;">
+    <div class="modal">
+      <h3>Journal Note</h3>
+      <textarea id="journalNote" rows="3" style="width:100%; background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:12px; padding:10px;"></textarea>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button class="btn" onclick="closeJournalModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveJournalNote()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = 'studyStreakPro2';
+      let appData;
+      let timerSec = 0, timerInterval = null, isRunning = false, presetTarget = null;
+      let calendarMonth = new Date().getMonth(), calendarYear = new Date().getFullYear();
+      let currentTab = 'rewards';
+      let audioCtx = null, rainNode = null, cafeNode = null;
+
+      function defaults() {
+        return {
+          streak:0, lastStudyDate:null, totalPoints:0, todayMinutes:0, todayDate:null, freezeTokens:2,
+          studyHistory:[], redeemedRewards:[], customRewards:[], streakMilestonesHit:[],
+          moodLog:[], habitDoneToday:false, journalEntries:[], goals:[], badgesEarned:[],
+          activeChallenge:null, theme:'dark'
+        };
+      }
+
+      function load() {
+        try {
+          let d = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (!d) d = defaults();
+          for (let k of Object.keys(defaults())) if (!(k in d)) d[k] = defaults()[k];
+          return d;
+        } catch(e) { return defaults(); }
+      }
+
+      function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
+
+      appData = load();
+      if (appData.theme === 'light') document.body.classList.add('light-theme');
+
+      const today = () => new Date().toISOString().split('T')[0];
+      const yesterday = () => { let d = new Date(); d.setDate(d.getDate()-1); return d.toISOString().split('T')[0]; };
+      const isWeekend = d => new Date(d+'T00:00:00').getDay()===0 || new Date(d+'T00:00:00').getDay()===6;
+
+      function mult(s) { return s>=100?5:s>=50?3:s>=30?2.5:s>=21?2.2:s>=14?1.8:s>=7?1.5:s>=3?1.2:1; }
+      function flameStage(s) { return s>=100?8:s>=50?7:s>=30?6:s>=21?5:s>=14?4:s>=7?3:s>=3?2:1; }
+
+      function updateUI() {
+        let stage = flameStage(appData.streak), m = mult(appData.streak);
+        document.getElementById('flameEmoji').textContent = stage>=8?'👑':stage>=7?'🌟':stage>=6?'⚡':stage>=5?'💎':'🔥';
+        document.getElementById('streakNumber').textContent = appData.streak;
+        document.getElementById('multiplierBadge').textContent = `🔥 ${m.toFixed(1)}x`;
+        document.getElementById('totalPoints').textContent = appData.totalPoints;
+        document.getElementById('todayMinutes').textContent = appData.todayMinutes;
+        document.getElementById('freezeTokens').textContent = appData.freezeTokens;
+        let studiedToday = appData.lastStudyDate === today() && appData.todayMinutes >= 5;
+        document.getElementById('studiedBadge').style.display = studiedToday ? 'inline-block' : 'none';
+        document.getElementById('btnCheckin').disabled = studiedToday;
+        renderRewards(); renderCalendar(); renderBadges(); renderGoals(); renderJournal(); renderChallenge();
+        document.getElementById('themeToggle').textContent = appData.theme==='light' ? '🌙 Dark Mode' : '🌓 Light Mode';
+        updateProgressBar();
+      }
+
+      // Timer & progress bar
+      function updateTimer() {
+        let min = Math.floor(timerSec/60), sec = timerSec%60;
+        document.getElementById('timerDisplay').textContent = String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+        updateProgressBar();
+      }
+
+      function updateProgressBar() {
+        const barContainer = document.getElementById('progressBarContainer');
+        const barFill = document.getElementById('progressBarFill');
+        if (isRunning && presetTarget) {
+          barContainer.style.display = 'block';
+          let pct = Math.min((timerSec / presetTarget) * 100, 100);
+          barFill.style.width = pct + '%';
+        } else {
+          barContainer.style.display = 'none';
+          barFill.style.width = '0%';
+        }
+      }
+
+      function startTimer() {
+        if (isRunning) return;
+        isRunning = true; document.getElementById('btnStart').disabled = true; document.getElementById('btnStop').disabled = false;
+        document.getElementById('timerDisplay').classList.add('running');
+        updateProgressBar();
+        timerInterval = setInterval(() => {
+          timerSec++;
+          updateTimer();
+          if (presetTarget && timerSec >= presetTarget) {
+            clearInterval(timerInterval); timerInterval = null;
+            isRunning = false;
+            document.getElementById('timerDisplay').classList.remove('running');
+            document.getElementById('btnStart').disabled = false; document.getElementById('btnStop').disabled = true;
+            // Show completion modal
+            let min = Math.round(timerSec/60);
+            document.getElementById('completionMsg').textContent = `You crushed ${min} minutes! 🎉`;
+            document.getElementById('completionModal').style.display = 'flex';
+          }
+        }, 1000);
+      }
+
+      function stopTimer() {
+        if (!isRunning) return;
+        clearInterval(timerInterval); timerInterval = null;
+        isRunning = false;
+        document.getElementById('btnStart').disabled = false; document.getElementById('btnStop').disabled = true;
+        document.getElementById('timerDisplay').classList.remove('running');
+        let min = Math.round(timerSec/60);
+        if (min >= 1 || timerSec >= 30) logStudy(min || 1);
+        else showToast('Too short (min 30s)','warning');
+        timerSec = 0; presetTarget = null; updateTimer(); updateProgressBar();
+        if (min >= 5) openJournalModal();
+      }
+
+      function setPreset(m) {
+        if (isRunning) stopTimer();
+        presetTarget = m*60; timerSec = 0; updateTimer(); updateProgressBar();
+        showToast(`⏱️ Preset: ${m} min`);
+      }
+
+      function quickCheckin() {
+        if (isRunning) return;
+        if (appData.lastStudyDate === today() && appData.todayMinutes >= 5) { showToast('Already studied today'); return; }
+        logStudy(5);
+      }
+
+      function logStudy(minutes) {
+        let t = today(), y = yesterday();
+        if (appData.todayMinutes === 0 && appData.lastStudyDate !== t) {
+          if (appData.lastStudyDate === y) appData.streak++;
+          else if (appData.lastStudyDate && appData.lastStudyDate < y) {
+            if (appData.freezeTokens > 0 && appData.streak > 0) { appData.freezeTokens--; appData.streak++; showToast('❄️ Freeze used!'); }
+            else { appData.streak = 1; showToast('New streak started'); }
+          } else if (!appData.lastStudyDate) appData.streak = 1;
+          appData.lastStudyDate = t;
+        }
+        if (appData.streak === 0 && minutes >= 5) { appData.streak = 1; appData.lastStudyDate = t; }
+        let multiplier = mult(appData.streak), points = Math.round(minutes * multiplier);
+        if (isWeekend(t)) points += Math.round(points*0.5);
+        appData.todayMinutes += minutes; appData.totalPoints += points; appData.todayDate = t;
+        let mood = document.getElementById('moodSelect').value;
+        let energy = document.getElementById('energySelect').value;
+        appData.studyHistory.unshift({ date:t, minutes, points, multiplier, mood, energy });
+        if (appData.studyHistory.length > 100) appData.studyHistory = appData.studyHistory.slice(0,100);
+        if (appData.streak % 7 === 0 && appData.streak > 0 && !appData.streakMilestonesHit.includes('freeze_'+appData.streak)) {
+          appData.freezeTokens += 2;
+          appData.streakMilestonesHit.push('freeze_'+appData.streak);
+          showToast('❄️ +2 streak freezes!','success');
+        }
+        if ([7,14,30,50,100].includes(appData.streak) && !appData.streakMilestonesHit.includes('cel_'+appData.streak)) {
+          appData.streakMilestonesHit.push('cel_'+appData.streak);
+          triggerConfetti(); showToast(`🎉 ${appData.streak} day streak!`);
+        }
+        checkBadges(); checkGoals();
+        if (appData.activeChallenge) {
+          appData.activeChallenge.progress[t] = (appData.activeChallenge.progress[t] || 0) + minutes;
+        }
+        save(); updateUI();
+        showToast(`+${points} pts (${multiplier.toFixed(1)}x)`);
+      }
+
+      // Completion modal OK button
+      document.getElementById('completionOkBtn').addEventListener('click', () => {
+        document.getElementById('completionModal').style.display = 'none';
+        let min = Math.round(timerSec/60);
+        if (min >= 1 || timerSec >= 30) logStudy(min || 1);
+        else showToast('Too short, not logged','warning');
+        timerSec = 0; presetTarget = null; updateTimer(); updateProgressBar();
+        if (min >= 5) openJournalModal();
+      });
+
+      // Habit
+      document.getElementById('habitDoneBtn').addEventListener('click', () => {
+        if (appData.habitDoneToday) { showToast('Habit already done'); return; }
+        appData.habitDoneToday = true; appData.totalPoints += 20; save(); updateUI();
+        showToast('✅ Habit done! +20 pts');
+      });
+
+      // Rewards
+      function getRewards() { return [...defaultRewards(), ...appData.customRewards]; }
+      function defaultRewards() {
+        return [
+          {id:'r1',name:'Sweet Compliment',emoji:'💌',cost:100},{id:'r2',name:'Random Dessert',emoji:'🍰',cost:250},{id:'r3',name:'Movie Night Pick',emoji:'🎬',cost:400},{id:'r4',name:'Date Night Choice',emoji:'🌃',cost:700},{id:'r5',name:'Boyfriend Cooks',emoji:'🍳',cost:900},{id:'r6',name:'Weekend Activity',emoji:'🎯',cost:1400},{id:'r7',name:'Spa Day',emoji:'🧖‍♀️',cost:2000},{id:'r8',name:'Surprise Gift',emoji:'🎁',cost:2800},{id:'r9',name:'Weekend Getaway',emoji:'✈️',cost:4500},{id:'freeze_shop',name:'Streak Freeze ❄️',emoji:'❄️',cost:200}
+        ];
+      }
+      function renderRewards() {
+        let html = '';
+        getRewards().forEach(r => {
+          let redeemed = appData.redeemedRewards.includes(r.id);
+          let afford = appData.totalPoints >= r.cost;
+          html += `<div class="reward-card"><span class="reward-emoji">${r.emoji}</span><span class="reward-name">${r.name}</span><span class="reward-cost">⭐ ${r.cost}</span><button class="btn-redeem" ${(!afford||redeemed)?'disabled':''} onclick="redeemReward('${r.id}')">${redeemed?'✓ Redeemed':'Redeem'}</button></div>`;
+        });
+        document.getElementById('rewardsGrid').innerHTML = html;
+      }
+      window.redeemReward = (id) => {
+        let r = getRewards().find(x=>x.id===id);
+        if (!r || appData.redeemedRewards.includes(id)) return;
+        if (appData.totalPoints < r.cost) { showToast('Not enough points'); return; }
+        appData.totalPoints -= r.cost;
+        appData.redeemedRewards.push(id);
+        if (r.id === 'freeze_shop') appData.freezeTokens++;
+        save(); updateUI(); showToast(`🎁 ${r.name} redeemed!`); triggerConfetti();
+      };
+
+      function openAddRewardModal() { document.getElementById('addRewardModal').style.display='flex'; }
+      function closeAddRewardModal() { document.getElementById('addRewardModal').style.display='none'; }
+      function addCustomReward() {
+        let n=document.getElementById('newRewardName').value.trim(), d=document.getElementById('newRewardDesc').value.trim(), e=document.getElementById('newRewardEmoji').value.trim()||'🎁', c=parseInt(document.getElementById('newRewardCost').value);
+        if(!n||!d||isNaN(c)||c<10) return showToast('Invalid input');
+        appData.customRewards.push({id:'c'+Date.now(), name:n, desc:d, emoji:e, cost:c});
+        save(); updateUI(); closeAddRewardModal();
+      }
+
+      // Calendar
+      function renderCalendar() {
+        let months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        document.getElementById('calendarMonthLabel').textContent = `${months[calendarMonth]} ${calendarYear}`;
+        let studySet = new Set(appData.studyHistory.map(h=>h.date));
+        let firstDay = new Date(calendarYear,calendarMonth,1).getDay();
+        let days = new Date(calendarYear,calendarMonth+1,0).getDate();
+        let html = '', dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        dayNames.forEach(d => html += `<div class="calendar-day-name">${d}</div>`);
+        for (let i=0;i<firstDay;i++) html += '<div class="calendar-day"></div>';
+        for (let d=1; d<=days; d++) {
+          let dateStr = `${calendarYear}-${String(calendarMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+          let studied = studySet.has(dateStr);
+          html += `<div class="calendar-day${dateStr===today()?' today':''}${studied?' studied':''}">${d}${studied?'<span class="flame-mini">🔥</span>':''}</div>`;
+        }
+        document.getElementById('calendarGrid').innerHTML = html;
+      }
+      document.getElementById('prevMonthBtn').onclick = ()=>{ calendarMonth--; if(calendarMonth<0){calendarMonth=11;calendarYear--;} renderCalendar(); };
+      document.getElementById('nextMonthBtn').onclick = ()=>{ calendarMonth++; if(calendarMonth>11){calendarMonth=0;calendarYear++;} renderCalendar(); };
+
+      // Badges
+      const badgeList = [
+        {id:'early',name:'Early Bird',cond:()=>appData.studyHistory.some(h=>new Date(h.date+'T07:00').getHours()<7),emoji:'🌅'},
+        {id:'night',name:'Night Owl',cond:()=>appData.studyHistory.some(h=>new Date(h.date+'T22:00').getHours()>=22),emoji:'🦉'},
+        {id:'marathon',name:'Marathon',cond:()=>appData.studyHistory.some(h=>h.minutes>=180),emoji:'🏃'},
+        {id:'week7',name:'7-Day Streak',cond:()=>appData.streak>=7,emoji:'🔥'},
+        {id:'week30',name:'30-Day Streak',cond:()=>appData.streak>=30,emoji:'⭐'},
+        {id:'points10k',name:'10k Points',cond:()=>appData.totalPoints>=10000,emoji:'💰'},
+        {id:'weekend',name:'Weekend Warrior',cond:()=>appData.studyHistory.some(h=>isWeekend(h.date)),emoji:'🎉'},
+      ];
+      function checkBadges() { badgeList.forEach(b => { if(b.cond() && !appData.badgesEarned.includes(b.id)) { appData.badgesEarned.push(b.id); showToast(`🏆 Badge: ${b.name}!`); } }); }
+      function renderBadges() {
+        let html = '';
+        badgeList.forEach(b => { let earned = appData.badgesEarned.includes(b.id); html += `<div class="badge${earned?' earned':''}"><span class="badge-emoji">${b.emoji}</span><div class="badge-name">${b.name}</div></div>`; });
+        document.getElementById('badgeGrid').innerHTML = html;
+      }
+
+      // Goals
+      function addGoal() {
+        let desc = document.getElementById('newGoalDesc').value.trim(), target = parseInt(document.getElementById('newGoalTarget').value);
+        if (!desc || isNaN(target)) return;
+        appData.goals.push({desc,target,progress:0,completed:false});
+        save(); updateUI();
+      }
+      function checkGoals() {
+        appData.goals.forEach(g => { if(!g.completed) { g.progress = appData.totalPoints; if(g.progress >= g.target) { g.completed = true; showToast(`🎯 Goal reached: ${g.desc}`); } } });
+      }
+      function renderGoals() {
+        let html = '';
+        appData.goals.forEach(g => { html += `<div class="goal-item"><span>${g.desc} (${g.progress}/${g.target})</span> ${g.completed?'✅':''}</div>`; });
+        document.getElementById('goalsList').innerHTML = html || '<p style="color:var(--text-light);">No goals yet.</p>';
+      }
+
+      // Journal (with mood/energy)
+      function openJournalModal() { document.getElementById('journalModal').style.display='flex'; }
+      function closeJournalModal() { document.getElementById('journalModal').style.display='none'; }
+      function saveJournalNote() {
+        let note = document.getElementById('journalNote').value.trim();
+        if (note) {
+          let mood = document.getElementById('moodSelect').value;
+          let energy = document.getElementById('energySelect').value;
+          appData.journalEntries.unshift({ date: today(), time: new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), note, mood, energy });
+          save(); updateUI();
+        }
+        closeJournalModal();
+        document.getElementById('journalNote').value = '';
+      }
+      function renderJournal() {
+        let html = '';
+        appData.journalEntries.slice(0,30).forEach(e => {
+          let moodEmoji = e.mood || '';
+          let energyLabel = e.energy ? ['','🔋 Low','🔋 Medium','🔋 High'][e.energy] : '';
+          html += `<div class="journal-entry"><div class="journal-meta">📅 ${e.date} · ${e.time||''} ${moodEmoji} ${energyLabel}</div>${e.note}</div>`;
+        });
+        document.getElementById('journalEntries').innerHTML = html || '<p style="color:var(--text-light);">No notes yet. Click "New Note" or finish a study session.</p>';
+      }
+      document.getElementById('newJournalBtn').addEventListener('click', ()=>{ document.getElementById('journalNote').value=''; openJournalModal(); });
+
+      // Challenges
+      function startChallenge(days, min) {
+        if (appData.activeChallenge) return;
+        appData.activeChallenge = { days, minPerDay: min, startDate: today(), progress: {} };
+        save(); updateUI();
+      }
+      function cancelChallenge() {
+        if (confirm('Cancel current challenge?')) {
+          appData.activeChallenge = null; save(); updateUI();
+        }
+      }
+      function renderChallenge() {
+        let c = appData.activeChallenge; let html = '';
+        if (c) {
+          let start = new Date(c.startDate), now = new Date(today()), diff = Math.floor((now-start)/86400000)+1;
+          let done = Object.values(c.progress).filter(v => v >= c.minPerDay).length;
+          html += `<div class="challenge-card"><strong>${c.days}-Day Challenge</strong> (${c.minPerDay} min/day)<br>Day ${Math.min(diff,c.days)}/${c.days} · Completed: ${done}<br>`;
+          if (diff >= c.days && done >= c.days && !c.completed) { appData.totalPoints+=500; c.completed=true; save(); html += '🎉 Completed! +500 pts!'; }
+          html += `<br><button class="btn btn-danger btn-small" onclick="cancelChallenge()">Cancel</button></div>`;
+        } else {
+          html = '<button class="btn btn-primary" onclick="startChallenge(7,30)">7-Day (30min)</button> <button class="btn btn-primary" onclick="startChallenge(30,25)">30-Day (25min)</button>';
+        }
+        document.getElementById('challengeContainer').innerHTML = html;
+      }
+      window.startChallenge = startChallenge;
+      window.cancelChallenge = cancelChallenge;
+
+      // Roulette
+      document.getElementById('spinRouletteBtn').addEventListener('click', ()=>{
+        if (appData.totalPoints < 50) { showToast('Need 50 pts'); return; }
+        appData.totalPoints -= 50;
+        if (Math.random() < 0.25) {
+          appData.freezeTokens++; save(); updateUI();
+          document.getElementById('rouletteResult').textContent = '❄️ Streak Freeze won!';
+          showToast('Roulette: Streak Freeze!');
+        } else {
+          let rewards = getRewards().filter(r => !appData.redeemedRewards.includes(r.id) && r.id!=='freeze_shop');
+          if (rewards.length === 0) { showToast('No rewards left'); return; }
+          let random = rewards[Math.floor(Math.random()*rewards.length)];
+          appData.redeemedRewards.push(random.id); save(); updateUI();
+          document.getElementById('rouletteResult').textContent = `🎉 Won: ${random.emoji} ${random.name}`;
+          showToast(`Roulette: ${random.name}!`);
+        }
+      });
+
+      // Settings
+      document.getElementById('themeToggle').addEventListener('click', ()=>{
+        document.body.classList.toggle('light-theme');
+        appData.theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        save(); updateUI();
+      });
+      function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+      function createNoise() { let buf = audioCtx.createBuffer(1, audioCtx.sampleRate*2, audioCtx.sampleRate), d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return buf; }
+      document.getElementById('rainSoundBtn').addEventListener('click', ()=>{
+        initAudio();
+        if(rainNode) { rainNode.gain.gain.value=0; rainNode=null; return; }
+        let src = audioCtx.createBufferSource(); src.buffer = createNoise(); src.loop = true;
+        let filter = audioCtx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=800;
+        let gain = audioCtx.createGain(); gain.gain.value=0.3;
+        src.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+        rainNode = {src, gain}; src.start();
+      });
+      document.getElementById('cafeSoundBtn').addEventListener('click', ()=>{
+        initAudio();
+        if(cafeNode) { cafeNode.gain.gain.value=0; cafeNode=null; return; }
+        let src = audioCtx.createBufferSource(); src.buffer = createNoise(); src.loop = true;
+        let gain = audioCtx.createGain(); gain.gain.value=0.2;
+        src.connect(gain); gain.connect(audioCtx.destination);
+        cafeNode = {src, gain}; src.start();
+      });
+      document.getElementById('shareBFBtn').addEventListener('click', ()=>{
+        let last = appData.redeemedRewards.slice(-1)[0];
+        if (!last) return showToast('No reward redeemed');
+        let r = getRewards().find(x=>x.id===last);
+        let msg = `Hey love! 💕 I just redeemed ${r.emoji} ${r.name}. Can we do this soon? 🥰`;
+        navigator.clipboard.writeText(msg).then(()=>showToast('Copied!'));
+      });
+
+      // Tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', ()=>{
+          document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+          document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+          btn.classList.add('active');
+          currentTab = btn.dataset.tab;
+          document.getElementById('panel-'+currentTab).classList.add('active');
+          if (currentTab==='roulette') document.getElementById('rouletteResult').textContent='';
+        });
+      });
+
+      function showToast(msg) {
+        let t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+        document.getElementById('toastContainer').appendChild(t);
+        setTimeout(()=>t.remove(), 3000);
+      }
+      function triggerConfetti() {
+        for(let i=0;i<40;i++){let c=document.createElement('div');c.style.position='fixed';c.style.left=Math.random()*100+'%';c.style.top='-10px';c.style.width='6px';c.style.height='10px';c.style.background=['#ff6b35','#f0c060','#e94560','#4caf84'][i%4];c.style.animation='fall 2s linear forwards';document.body.appendChild(c);setTimeout(()=>c.remove(),2100);}
+      }
+      document.head.insertAdjacentHTML('beforeend','<style>@keyframes fall{0%{transform:translateY(0) rotate(0);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}</style>');
+
+      // Init
+      document.getElementById('btnStart').addEventListener('click', startTimer);
+      document.getElementById('btnStop').addEventListener('click', stopTimer);
+      document.getElementById('btnCheckin').addEventListener('click', quickCheckin);
+      window.openAddRewardModal = openAddRewardModal;
+      window.closeAddRewardModal = closeAddRewardModal;
+      window.addCustomReward = addCustomReward;
+      window.closeJournalModal = closeJournalModal;
+      window.saveJournalNote = saveJournalNote;
+      window.addGoal = addGoal;
+
+      if (appData.todayDate !== today()) {
+        appData.todayMinutes = 0; appData.habitDoneToday = false; appData.todayDate = today(); save();
+      }
+      updateUI();
+      updateTimer();
+    })();
+  </script>
+</body>
+</html>
